@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,15 +65,7 @@ export default function HomePage() {
   const contactRef = useRef<HTMLDivElement>(null);
   const { translations, language } = useLanguage();
 
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(() => {
-      // Placeholder for the removed activeSection
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [language]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       console.log("Fetching data with language:", language);
@@ -123,7 +115,15 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [language]);
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(() => {
+      // Placeholder for the removed activeSection
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -167,7 +167,7 @@ export default function HomePage() {
       } else {
         throw new Error("Mesaj gönderilemedi");
       }
-    } catch (error) {
+    } catch {
       toast.error(translations.contact.error, {
         position: "top-right",
         autoClose: 5000,
