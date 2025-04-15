@@ -20,12 +20,11 @@ export async function GET() {
     try {
       jwt.verify(token.value, JWT_SECRET);
       return NextResponse.json({ authenticated: true });
-    } catch (error) {
+    } catch {
       // Token geçersiz veya süresi dolmuş
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
-  } catch (error) {
-    console.error("Auth check error:", error);
+  } catch {
     return NextResponse.json({ message: "Bir hata oluştu" }, { status: 500 });
   }
 }

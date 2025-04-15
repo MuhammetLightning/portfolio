@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Profile from "@/models/Profile";
-import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
