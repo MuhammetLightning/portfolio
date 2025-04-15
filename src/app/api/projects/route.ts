@@ -7,10 +7,17 @@ export async function GET() {
     await connectDB();
     const projects = await Project.find().sort({ createdAt: -1 });
     return NextResponse.json(projects);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Projeler getirilirken hata:", error);
+    let message = "Projeler getirilirken bir hata oluştu";
+    if (error instanceof Error) {
+      message = error.message;
+    }
     return NextResponse.json(
-      { message: "Projeler getirilirken bir hata oluştu" },
+      {
+        message,
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
@@ -23,12 +30,16 @@ export async function POST(request: Request) {
 
     const project = await Project.create(data);
     return NextResponse.json(project);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Proje oluşturulurken hata:", error);
+    let message = "Proje oluşturulurken bir hata oluştu";
+    if (error instanceof Error) {
+      message = error.message;
+    }
     return NextResponse.json(
       {
-        message: "Proje oluşturulurken bir hata oluştu",
-        error: error.message,
+        message,
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

@@ -57,12 +57,16 @@ export async function POST(request: Request) {
 
     console.log("Güncellenen profil:", profile);
     return NextResponse.json(profile);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Profil güncelleme hatası:", error);
+    let message = "Profil güncellenirken bir hata oluştu";
+    if (error instanceof Error) {
+      message = error.message;
+    }
     return NextResponse.json(
       {
-        message: "Profil güncellenirken bir hata oluştu",
-        error: error.message,
+        message,
+        error: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
 if (!process.env.MONGODB_URI) {
   throw new Error("MONGODB_URI is not defined in environment variables");
@@ -6,10 +6,18 @@ if (!process.env.MONGODB_URI) {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-let cached = (global as any).mongoose;
+interface MongooseCache {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+}
+
+let cached: MongooseCache = (global as any).mongoose || {
+  conn: null,
+  promise: null,
+};
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = { conn: null, promise: null };
 }
 
 async function connectDB() {
@@ -39,6 +47,8 @@ async function connectDB() {
     cached.promise = null;
     throw error;
   }
+
+  (global as any).mongoose = cached;
 
   return cached.conn;
 }
