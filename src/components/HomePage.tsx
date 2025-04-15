@@ -115,7 +115,7 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  }, [language]);
+  }, [language, translations.hero.bio, translations.hero.title]);
 
   useEffect(() => {
     fetchData();
