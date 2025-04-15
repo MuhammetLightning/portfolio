@@ -53,8 +53,7 @@ export default function ProfileManager() {
           type: "error",
         });
       }
-    } catch (error) {
-      console.error("Profil bilgileri alınırken hata:", error);
+    } catch {
       setMessage({
         text: "Profil bilgileri alınırken bir hata oluştu",
         type: "error",
@@ -89,9 +88,9 @@ export default function ProfileManager() {
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
-        text: "Bir hata oluştu",
+        text: "Profil güncellenirken bir hata oluştu",
         type: "error",
       });
     } finally {
@@ -156,7 +155,7 @@ export default function ProfileManager() {
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         text: "Resim yüklenirken bir hata oluştu",
         type: "error",

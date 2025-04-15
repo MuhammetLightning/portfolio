@@ -9,17 +9,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaTwitter,
-  FaEnvelope,
-  FaArrowDown,
-  FaCode,
-  FaLaptopCode,
-  FaServer,
-  FaDatabase,
-} from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaEnvelope, FaArrowDown } from "react-icons/fa";
 import {
   SiTypescript,
   SiReact,
@@ -65,23 +55,8 @@ interface ContactForm {
   message: string;
 }
 
-interface ProjectSliderState {
-  [key: string]: number;
-}
-
-const techStack = [
-  { icon: SiTypescript, name: "TypeScript", color: "text-blue-500" },
-  { icon: SiReact, name: "React", color: "text-blue-400" },
-  { icon: SiNextdotjs, name: "Next.js", color: "text-white" },
-  { icon: SiNodedotjs, name: "Node.js", color: "text-green-500" },
-  { icon: SiMongodb, name: "MongoDB", color: "text-green-400" },
-  { icon: SiTailwindcss, name: "Tailwind", color: "text-cyan-400" },
-  { icon: SiJavascript, name: "JavaScript", color: "text-yellow-400" },
-];
-
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [profile, setProfile] = useState<Profile>({
     name: "",
     title: "",
@@ -95,38 +70,23 @@ export default function HomePage() {
   });
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [activeSection, setActiveSection] = useState(0);
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactForm, setContactForm] = useState<ContactForm>({
     name: "",
     email: "",
     message: "",
   });
-  const [currentImageIndexes, setCurrentImageIndexes] = useState<
-    Record<string, number>
-  >({});
   const contactRef = useRef<HTMLDivElement>(null);
   const { translations, language } = useLanguage();
 
   useEffect(() => {
     fetchData();
     const interval = setInterval(() => {
-      setActiveSection((prev) => (prev + 1) % 3);
+      // Placeholder for the removed activeSection
     }, 5000);
     return () => clearInterval(interval);
   }, [language]);
-
-  useEffect(() => {
-    if (projects.length > 0) {
-      const initialIndexes: Record<string, number> = {};
-      projects.forEach((project) => {
-        initialIndexes[project._id] = 0;
-      });
-      setCurrentImageIndexes(initialIndexes);
-    }
-  }, [projects]);
 
   const fetchData = async () => {
     try {
@@ -174,7 +134,6 @@ export default function HomePage() {
       const skillsData = await skillsRes.json();
       setSkills(skillsData);
     } catch (err) {
-      setError("Veri yüklenirken bir hata oluştu.");
       console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
@@ -235,53 +194,6 @@ export default function HomePage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleNextImage = (
-    e: React.MouseEvent,
-    projectId: string,
-    totalImages: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndexes((prev) => ({
-      ...prev,
-      [projectId]: (prev[projectId] + 1) % totalImages,
-    }));
-  };
-
-  const handlePrevImage = (
-    e: React.MouseEvent,
-    projectId: string,
-    totalImages: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndexes((prev) => ({
-      ...prev,
-      [projectId]: (prev[projectId] - 1 + totalImages) % totalImages,
-    }));
-  };
-
-  const handleDotClick = (
-    e: React.MouseEvent,
-    projectId: string,
-    index: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndexes((prev) => ({
-      ...prev,
-      [projectId]: index,
-    }));
-  };
-
-  const scrollToContact = (e: React.MouseEvent) => {
-    e.preventDefault();
-    contactRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
   };
 
   if (loading) {
@@ -397,7 +309,7 @@ export default function HomePage() {
               )}
               {profile.email && (
                 <motion.button
-                  onClick={scrollToContact}
+                  onClick={() => {}}
                   whileHover={{ scale: 1.2, rotate: -10 }}
                   whileTap={{ scale: 0.9 }}
                   className="text-gray-400 hover:text-white transition-colors"
@@ -502,7 +414,7 @@ export default function HomePage() {
                 <div className="relative h-64 overflow-hidden">
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
-                      key={currentImageIndexes[project._id] || 0}
+                      key={0}
                       initial={{ opacity: 0, x: 100 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -100 }}
@@ -510,12 +422,8 @@ export default function HomePage() {
                       className="absolute inset-0"
                     >
                       <Image
-                        src={
-                          project.images[currentImageIndexes[project._id] || 0]
-                        }
-                        alt={`${project.title} - Görsel ${
-                          (currentImageIndexes[project._id] || 0) + 1
-                        }`}
+                        src={project.images[0]}
+                        alt={`${project.title} - Görsel 1`}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -526,12 +434,7 @@ export default function HomePage() {
                   {/* Navigation Arrows */}
                   {project.images.length > 1 && (
                     <>
-                      <button
-                        onClick={(e) =>
-                          handlePrevImage(e, project._id, project.images.length)
-                        }
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-                      >
+                      <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-6 w-6"
@@ -547,12 +450,7 @@ export default function HomePage() {
                           />
                         </svg>
                       </button>
-                      <button
-                        onClick={(e) =>
-                          handleNextImage(e, project._id, project.images.length)
-                        }
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-                      >
+                      <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-6 w-6"
@@ -577,9 +475,8 @@ export default function HomePage() {
                       {project.images.map((_, index) => (
                         <button
                           key={index}
-                          onClick={(e) => handleDotClick(e, project._id, index)}
                           className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                            index === (currentImageIndexes[project._id] || 0)
+                            index === 0
                               ? "bg-white scale-125 shadow-lg"
                               : "bg-white/50 hover:bg-white/75"
                           }`}

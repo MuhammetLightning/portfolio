@@ -40,8 +40,7 @@ export default function ProjectsManager() {
       const res = await fetch("/api/projects");
       const data = await res.json();
       setProjects(data || []);
-    } catch (error) {
-      console.error("Projeler yüklenemedi:", error);
+    } catch {
       setMessage({
         text: "Projeler yüklenirken bir hata oluştu",
         type: "error",
@@ -93,9 +92,9 @@ export default function ProjectsManager() {
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
-        text: "Bir hata oluştu",
+        text: "Proje eklenirken bir hata oluştu",
         type: "error",
       });
     } finally {
@@ -191,7 +190,7 @@ export default function ProjectsManager() {
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         text: "Resim yüklenirken bir hata oluştu",
         type: "error",

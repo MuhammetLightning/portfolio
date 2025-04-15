@@ -7,8 +7,11 @@ export async function GET() {
     await connectDB();
     const skills = await Skill.find().sort({ createdAt: -1 });
     return NextResponse.json(skills);
-  } catch (error) {
-    return NextResponse.json({ error: "Bir hata oluştu" }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { message: "Yetenekler alınırken hata oluştu" },
+      { status: 500 }
+    );
   }
 }
 
@@ -21,7 +24,10 @@ export async function POST(request: Request) {
     await skill.save();
 
     return NextResponse.json(skill);
-  } catch (error) {
-    return NextResponse.json({ error: "Bir hata oluştu" }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { message: "Yetenek eklenirken hata oluştu" },
+      { status: 500 }
+    );
   }
 }

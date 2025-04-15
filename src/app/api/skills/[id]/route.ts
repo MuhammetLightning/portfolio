@@ -24,7 +24,7 @@ export async function PUT(
     }
 
     return NextResponse.json(skill);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Bir hata oluştu" }, { status: 500 });
   }
 }
@@ -48,7 +48,10 @@ export async function DELETE(
       { message: "Yetenek başarıyla silindi" },
       { status: 200 }
     );
-  } catch (error) {
-    return NextResponse.json({ error: "Bir hata oluştu" }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { message: "Yetenek silinirken hata oluştu" },
+      { status: 500 }
+    );
   }
 }
