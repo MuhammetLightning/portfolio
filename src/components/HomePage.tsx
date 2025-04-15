@@ -1,24 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FaGithub, FaLinkedin, FaEnvelope, FaArrowDown } from "react-icons/fa";
-import {
-  SiTypescript,
-  SiReact,
-  SiNextdotjs,
-  SiNodedotjs,
-  SiMongodb,
-  SiTailwindcss,
-  SiJavascript,
-} from "react-icons/si";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLanguage } from "../context/LanguageContext";
@@ -70,7 +56,6 @@ export default function HomePage() {
   });
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const { scrollYProgress } = useScroll();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactForm, setContactForm] = useState<ContactForm>({
     name: "",
@@ -133,8 +118,8 @@ export default function HomePage() {
       const skillsRes = await fetch("/api/skills");
       const skillsData = await skillsRes.json();
       setSkills(skillsData);
-    } catch (err) {
-      console.error("Error fetching data:", err);
+    } catch {
+      console.error("Error fetching data");
     } finally {
       setLoading(false);
     }

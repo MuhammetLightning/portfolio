@@ -122,7 +122,7 @@ export default function ProjectsManager() {
           type: "error",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         text: "Bir hata oluştu",
         type: "error",
